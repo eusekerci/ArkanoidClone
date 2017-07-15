@@ -102,18 +102,14 @@ namespace Arkanoid
 
             for (int i = 0; i < _rowCount * _columnCount; i++)
             {
-                if (_level[i] == Utils.BrickToString(BrickType.Empty))
+                if (_level[i] != Utils.BrickToString(BrickType.Unbreakable))
                 {
-                    _complexityGraph[i] = 0;
-                }
-                else if (_level[i] == Utils.BrickToString(BrickType.Unbreakable))
-                {
-                    _complexityGraph[i] = 15;
+                    _complexityGraph[i] = -1;
+                    searchPositions.Add(i);
                 }
                 else
                 {
-                    _complexityGraph[i] = 99999;
-                    searchPositions.Add(i);
+                    _complexityGraph[i] = 25;
                 }
             }
 
@@ -139,7 +135,7 @@ namespace Arkanoid
                 List<int> neighbours = Utils.GetNeighbours(_currentIndex);
                 for (int i = 0; i < neighbours.Count; i++)
                 {
-                    if (_level[neighbours[i]] == Utils.BrickToString(BrickType.Basic) && searchPositions.Count > 0 && searchPositions.Contains(neighbours[i]))
+                    if (_level[neighbours[i]] != Utils.BrickToString(BrickType.Unbreakable) && searchPositions.Count > 0 && searchPositions.Contains(neighbours[i]))
                     {
                         _complexityGraph[neighbours[i]] = _complexityGraph[_currentIndex] + 1;
                         searchPositions.Remove(neighbours[i]);
@@ -148,6 +144,16 @@ namespace Arkanoid
                 }
             }
 
+            //Revert the complexity of empty tiles to Zero
+            for (int i = 0; i < _rowCount * _columnCount; i++)
+            {
+                if (_level[i] == Utils.BrickToString(BrickType.Empty))
+                {
+                    _complexityGraph[i] = 0;
+                }
+            }
+
+            
             for (int i = 0; i < _rowCount; i++)
             {
                 string asd = "";
@@ -157,6 +163,7 @@ namespace Arkanoid
                 }
                 Debug.Log(asd);
             }
+            
 
             return 0;
         }
