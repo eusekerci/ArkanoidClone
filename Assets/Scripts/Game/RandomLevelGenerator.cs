@@ -33,5 +33,65 @@ namespace Arkanoid
 
             return _level;
         }
+
+        //Random Level by Density
+        //BrickDensity and UnbreakableDensity must be between 0-100
+        //BrickDensity = bricks/(row*column)
+        //UnbreakableDensity = unbreakables/bricks
+        public string[] GenerateRandomLevel(int brickDensity, int unbreakableDensity)
+        {
+            int brickCount = (150 * brickDensity) / 100;
+            int unbreakableCount = (brickCount * unbreakableDensity) / 100;
+
+            for (int i = 0; i < _rowCount * _columnCount; i++)
+            {
+                _level[i] = Utils.BrickToString(BrickType.Empty);
+            }
+
+            while(brickCount > 0)
+            {
+                int randomIndex = _rand.Next(_rowCount * _columnCount);
+
+                if (_level[randomIndex] != Utils.BrickToString(BrickType.Empty))
+                {
+                    continue;
+                }
+
+                if (unbreakableCount > 0)
+                {
+                    _level[randomIndex] = Utils.BrickToString(BrickType.Unbreakable);
+                    unbreakableCount--;
+                }
+                else
+                {
+                    _level[randomIndex] = Utils.BrickToString(BrickType.Basic);
+                }
+
+                brickCount--;
+            }
+
+            return _level;
+        }
+
+        //TODO
+        private bool IsLevelAchieveable()
+        {
+            return true;
+        }
+
+        public int CalculateLevelComplexity()
+        {
+            return 0;
+        }
+
+        public string[] GenerateLevelByComplexity(int complexity)
+        {
+            return null;
+        }
+
+        public string[] GenerateLevelByComplexity(int complexity, int brickDensity, int unbreakableDensity)
+        {
+            return null;
+        }
     }
 }

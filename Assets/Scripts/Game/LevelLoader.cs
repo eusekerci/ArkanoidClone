@@ -46,7 +46,8 @@ namespace Arkanoid
             MessageBus.OnEvent<GameStartedEvent>().Subscribe(evnt =>
             {
                 RandomLevelGenerator _levelGenerator = new RandomLevelGenerator();
-                _levelMap = _levelGenerator.GenerateRandomLevel();
+                //_levelMap = _levelGenerator.GenerateRandomLevel();
+                _levelMap = _levelGenerator.GenerateRandomLevel(100, 50);
                 InitiliazeLevel();
             });
         }
@@ -62,7 +63,7 @@ namespace Arkanoid
             {
                 for (int j = 0; j < _columnCount; j++)
                 {
-                    if (_levelMap[i * _columnCount + j] != "0")
+                    if (_levelMap[i * _columnCount + j] != Utils.BrickToString(BrickType.Empty))
                     {
                         int type = Int32.Parse(_levelMap[i * _columnCount + j]);
                         GameObject go = BrickPools.Pools[(BrickType)type].Get();
