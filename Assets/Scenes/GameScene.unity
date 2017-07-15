@@ -362,7 +362,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 331096108}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -3.15, z: 0}
+  m_LocalPosition: {x: 0, y: -2.574, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -396,12 +396,12 @@ Rigidbody2D:
   m_UseAutoMass: 0
   m_Mass: 1
   m_LinearDrag: 0
-  m_AngularDrag: 0.05
+  m_AngularDrag: 0
   m_GravityScale: 0
   m_Material: {fileID: 0}
   m_Interpolate: 0
   m_SleepingMode: 1
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
   m_Constraints: 0
 --- !u!114 &331096113
 MonoBehaviour:
@@ -519,6 +519,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 673389988}
+  - component: {fileID: 673389990}
   - component: {fileID: 673389989}
   m_Layer: 0
   m_Name: Globals
@@ -552,6 +553,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   BasicBrick: {fileID: 4402713061391406, guid: 676b229134ebe2041a727be3dcab9a5b, type: 2}
+--- !u!114 &673389990
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 673389987}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 18f860a289d452248abbbd6174aa62bf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &735955872
 GameObject:
   m_ObjectHideFlags: 0
@@ -722,7 +734,7 @@ GameObject:
   - component: {fileID: 1326179492}
   m_Layer: 0
   m_Name: Paddle
-  m_TagString: Untagged
+  m_TagString: Paddle
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -776,7 +788,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1326179488}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -4, z: 0}
+  m_LocalPosition: {x: 0, y: -3.22, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}

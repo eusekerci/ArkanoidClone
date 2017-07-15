@@ -15,10 +15,12 @@ namespace Arkanoid
     public class Brick : MonoBehaviour
     {
         private int _life;
+        private BrickType _type;
 
         void Start()
         {
             _life = 1;
+            _type = BrickType.Basic;
         }
 
         void Update()
@@ -37,7 +39,7 @@ namespace Arkanoid
 
         private void DestroySelf()
         {
-            Destroy(gameObject);
+            BrickPools.Pools[_type].Kill(gameObject);
         }
 
         void OnCollisionEnter2D(Collision2D col)

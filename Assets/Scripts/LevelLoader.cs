@@ -57,7 +57,9 @@ namespace Arkanoid
                 {
                     if (_levelMap[i * columnCount + j] == "1")
                     {
-                        Instantiate(BasicBrick, new Vector3(firstColumnX + j * columnOffset, firstRowY + i * rowOffset, 0), Quaternion.identity, _brickRoot);
+                        GameObject go = BrickPools.Pools[BrickType.Basic].Get();
+                        go.transform.position = new Vector3(firstColumnX + j * columnOffset, firstRowY + i * rowOffset, 0);
+                        go.transform.SetParent(_brickRoot);
                     }
                 }
             }

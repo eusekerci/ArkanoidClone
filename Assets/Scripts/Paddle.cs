@@ -17,7 +17,7 @@ namespace Arkanoid
 #if UNITY_ANDROID || UNITY_IPHONE
 	    if (Input.touchCount > 0)
 	    {
-	        positionX = Input.touches[0].position.x;
+	        positionX = Camera.main.ScreenToWorldPoint(Input.touches[0].position).x;
 	    }
 	    else
 	    {
