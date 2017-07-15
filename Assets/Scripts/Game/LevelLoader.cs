@@ -47,7 +47,7 @@ namespace Arkanoid
             {
                 RandomLevelGenerator _levelGenerator = new RandomLevelGenerator();
                 //_levelMap = _levelGenerator.GenerateRandomLevel();
-                _levelMap = _levelGenerator.GenerateRandomLevel(100, 50);
+                _levelMap = _levelGenerator.GenerateRandomLevel(100, 20);
                 InitiliazeLevel();
             });
         }
