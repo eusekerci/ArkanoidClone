@@ -1,5 +1,7 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using UniRx;
 using UnityEngine;
 
 namespace Arkanoid
@@ -7,14 +9,14 @@ namespace Arkanoid
     public class LevelLoader : MonoBehaviour
     {
         private string[] _levelMap;
-        private int rowCount = 15;
-        private int columnCount = 10;
 
+        private const int _rowCount = 15;
+        private const int _columnCount = 10;
         private Transform _brickRoot;
-        private float firstRowY = 4.2f;
-        private float firstColumnX = -2.25f;
-        private float rowOffset = -0.3f;
-        private float columnOffset = 0.5f;
+        private const float _firstRowY = 4.2f;
+        private const float _firstColumnX = -2.25f;
+        private const float _rowOffset = -0.3f;
+        private const float _columnOffset = 0.5f;
 
         public Transform BasicBrick;
 
@@ -41,7 +43,12 @@ namespace Arkanoid
                 "0", "0", "1", "0", "0", "0", "0", "0", "1", "0"
             };
 
-            InitiliazeLevel();
+            MessageBus.OnEvent<GameStartedEvent>().Subscribe(evnt =>
+            {
+                RandomLevelGenerator _levelGenerator = new RandomLevelGenerator();
+                _levelMap = _levelGenerator.GenerateRandomLevel();
+                InitiliazeLevel();
+            });
         }
 
         void Update()
@@ -51,14 +58,15 @@ namespace Arkanoid
 
         public void InitiliazeLevel()
         {
-            for (int i = 0; i < rowCount; i++)
+            for (int i = 0; i < _rowCount; i++)
             {
-                for (int j = 0; j < columnCount; j++)
+                for (int j = 0; j < _columnCount; j++)
                 {
-                    if (_levelMap[i * columnCount + j] == "1")
+                    if (_levelMap[i * _columnCount + j] != "0")
                     {
-                        GameObject go = BrickPools.Pools[BrickType.Basic].Get();
-                        go.transform.position = new Vector3(firstColumnX + j * columnOffset, firstRowY + i * rowOffset, 0);
+                        int type = Int32.Parse(_levelMap[i * _columnCount + j]);
+                        GameObject go = BrickPools.Pools[(BrickType)type].Get();
+                        go.transform.position = new Vector3(_firstColumnX + j * _columnOffset, _firstRowY + i * _rowOffset, 0);
                         go.transform.SetParent(_brickRoot);
                     }
                 }

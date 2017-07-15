@@ -87,6 +87,7 @@ namespace Arkanoid
         {
             Pools = new Dictionary<BrickType, BrickPool>();
             Pools.Add(BrickType.Basic, new BrickPool(Resources.Load<GameObject>("Prefabs/BasicBrick"), BrickType.Basic, 150));
+            Pools.Add(BrickType.Unbreakable, new BrickPool(Resources.Load<GameObject>("Prefabs/UnbreakableBrick"), BrickType.Unbreakable, 150));
         }
     }
 }

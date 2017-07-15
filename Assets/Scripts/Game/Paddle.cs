@@ -6,11 +6,6 @@ namespace Arkanoid
 {
     public class Paddle : MonoBehaviour
     {
-        void Start()
-        {
-
-        }
-
         void Update()
         {
             float positionX = 0;
