@@ -148,21 +148,26 @@ namespace Arkanoid
             _totalComplexity = 0;
             for (int i = 0; i < _rowCount; i++)
             {
-                string asd = "";
+                //string asd = "";
                 for (int j = 0; j < _columnCount; j++)
                 {
-                    asd += _complexityGraph[i * _columnCount + j] + " ";
+                    //asd += _complexityGraph[i * _columnCount + j] + " ";
                     if (_complexityGraph[i * _columnCount + j] == -1)
                     {
                         return -1;
                     }
                     _totalComplexity += _complexityGraph[i * _columnCount + j];
                 }
-                Debug.Log(asd);
+                //Debug.Log(asd);
             }
 
             Debug.Log(_totalComplexity);
 
+            return _totalComplexity;
+        }
+
+        public int GetComplexity()
+        {
             return _totalComplexity;
         }
     }

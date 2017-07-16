@@ -8,7 +8,12 @@ namespace Arkanoid
 {
     public class LevelIsCompleted : ArkEvent { }
 
-    public class LevelManager : MonoBehaviour
+    public class LevelIsLoaded : ArkEvent
+    {
+        public int Complexity;
+    }
+
+    public class LevelLoader : MonoBehaviour
     {
         private string[] _levelMap;
 
@@ -21,10 +26,13 @@ namespace Arkanoid
         private const float _columnOffset = 0.5f;
         
         private Dictionary<BrickType, int> _brickCount;
+        private RandomLevelGenerator _levelGenerator;
 
         void Start()
         {
             _brickRoot = GameObject.Find("BrickRoot").transform;
+            _levelGenerator = new RandomLevelGenerator();
+
             _brickCount = new Dictionary<BrickType, int>();
             foreach (BrickType type in Enum.GetValues(typeof(BrickType)))
             {
@@ -33,20 +41,19 @@ namespace Arkanoid
 
             MessageBus.OnEvent<GameIsInitiliazed>().Subscribe(evnt =>
             {
-                RandomLevelGenerator _levelGenerator = new RandomLevelGenerator();
-                //_levelMap = _levelGenerator.GenerateRandomLevel();
-                _levelMap = _levelGenerator.GenerateRandomLevel(10, 0);
+                ClearLevel();
+                _levelMap = _levelGenerator.GenerateRandomLevel(evnt.BrickDensity, evnt.UnbreakableDensity);
+                //_levelMap = _levelGenerator.GenerateRandomLevel(50, 50);
                 InitiliazeLevel();
+                MessageBus.Publish(new LevelIsLoaded()
+                {
+                    Complexity =  _levelGenerator.GetComplexity()
+                });
             });
 
             MessageBus.OnEvent<BrickIsDestroyed>().Subscribe(evnt =>
             {
-                _brickCount[evnt.BType]--;
-                if (_brickCount[evnt.BType] <= 0)
-                {
-                    Debug.Log("Level is Completed");
-                    MessageBus.Publish(new LevelIsCompleted());
-                }
+                OnBrickDestroyed(evnt.BType);
             });
         }
 
@@ -72,6 +79,31 @@ namespace Arkanoid
 
                     _brickCount[Utils.StringToBrick(_levelMap[ind])]++;
                 }
+            }
+        }
+
+        public void ClearLevel()
+        {
+            foreach(Brick brck in _brickRoot.GetComponentsInChildren<Brick>())
+            {
+                brck.Clear();
+            }
+
+            foreach (BrickType type in Enum.GetValues(typeof(BrickType)))
+            {
+                _brickCount[type] = 0;
+            }
+
+            _levelMap = null;
+        }
+
+        private void OnBrickDestroyed(BrickType type)
+        {
+            _brickCount[type]--;
+            if (_brickCount[type] <= 0)
+            {
+                Debug.Log("Level is Completed");
+                MessageBus.Publish(new LevelIsCompleted());
             }
         }
     }

@@ -30,10 +30,11 @@ namespace Arkanoid
         protected int _life;
         protected BrickType _type;
         public Vector2 Position;
+        protected int _currentLife;
 
         protected virtual void Start()
         {
-
+            
         }
 
         void Update()
@@ -49,8 +50,8 @@ namespace Arkanoid
                 BType = _type
             });
 
-            _life--;
-            if (_life == 0)
+            _currentLife--;
+            if (_currentLife == 0)
             {
                 DestroySelf();
             }
@@ -66,9 +67,19 @@ namespace Arkanoid
             BrickPools.Pools[_type].Kill(gameObject);
         }
 
+        public void Clear()
+        {
+            BrickPools.Pools[_type].Kill(gameObject);
+        }
+
         private void OnCollisionEnter2D(Collision2D col)
         {
             GetHit();
+        }
+
+        private void OnEnable()
+        {
+            _currentLife = _life;
         }
     }
 }

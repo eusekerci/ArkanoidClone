@@ -11,6 +11,7 @@ namespace Arkanoid
             base.Start();
             _life = -1;
             _type = BrickType.Unbreakable;
+            _currentLife = _life;
         }
     }
 }
