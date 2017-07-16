@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace Arkanoid
@@ -55,6 +56,14 @@ namespace Arkanoid
                 neighbours.Add(tileA - columnCount);
 
             return neighbours;
+        }
+
+        public static Type[] GetChildrenTypesOf<T>()
+        {
+            return (from domainAssembly in AppDomain.CurrentDomain.GetAssemblies()
+                from assemblyType in domainAssembly.GetTypes()
+                where typeof(T).IsAssignableFrom(assemblyType) && assemblyType != typeof(T)
+                select assemblyType).ToArray();
         }
     }
 }

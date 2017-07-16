@@ -22,6 +22,7 @@ namespace UniRx
 
     public interface IMessageBroker : IMessagePublisher, IMessageReceiver
     {
+        void Remove(Type type);
     }
 
     public interface IAsyncMessagePublisher
@@ -88,6 +89,14 @@ namespace UniRx
             }
 
             return ((IObservable<T>)notifier).AsObservable();
+        }
+
+        public void Remove(Type type)
+        {
+            lock (notifiers)
+            {
+                notifiers.Remove(type);
+            }
         }
 
         public void Dispose()

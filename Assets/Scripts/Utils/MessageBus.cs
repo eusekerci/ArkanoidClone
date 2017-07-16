@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -16,6 +17,15 @@ namespace Arkanoid
         public static UniRx.IObservable<T> OnEvent<T>() where T : ArkEvent
         {
             return UniRx.MessageBroker.Default.Receive<T>();
+        }
+
+        public static void ClearAllEvents()
+        {
+            Type[] allTypes = Utils.GetChildrenTypesOf<ArkEvent>();
+            foreach (var type in allTypes)
+            {
+                UniRx.MessageBroker.Default.Remove(type);
+            }
         }
     }
 }

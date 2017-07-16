@@ -6,7 +6,6 @@ using UnityEngine.UI;
 
 namespace Arkanoid
 {
-
     public class UIManager : MonoBehaviour
     {
         #region Singleton
@@ -29,19 +28,31 @@ namespace Arkanoid
 
         public Text LevelName;
         public Text LevelDifficulty;
+        public PauseMenu PauseMenu;
+        public bool PauseMenuActive;
 
         void Awake()
         {
             instance = this;
         }
 
-        void Start()
+        public void Init()
         {
             MessageBus.OnEvent<LevelIsLoaded>().Subscribe(evnt =>
             {
                 LevelName.text = "Level: " + (GameManager.Instance.GetLevelIndex()+1).ToString();
                 LevelDifficulty.text = "Difficulty: " + (evnt.Complexity / 100).ToString();
             });
+
+            PauseMenuActive = false;
+            PauseMenu.gameObject.SetActive(PauseMenuActive);
+        }
+
+        public void TogglePauseMenu()
+        {
+            PauseMenuActive = !PauseMenuActive;
+            PauseMenu.gameObject.SetActive(PauseMenuActive);
+            Time.timeScale = PauseMenuActive ? 0 : 1;
         }
     }
 }

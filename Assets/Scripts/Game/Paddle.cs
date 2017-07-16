@@ -34,6 +34,10 @@ namespace Arkanoid
 
         void Update()
         {
+            //TODO GameManager.GameIsPaused?
+            if (Time.timeScale < 0.01)
+                return;
+
             float positionX = 0;
 #if UNITY_ANDROID || UNITY_IPHONE
 	    if (Input.touchCount > 0)

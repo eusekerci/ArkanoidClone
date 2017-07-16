@@ -6,7 +6,10 @@ using UnityEngine;
 
 namespace Arkanoid
 {
-    public class LevelIsCompleted : ArkEvent { }
+    public class LevelIsCompleted : ArkEvent
+    {
+        public bool Succeed;
+    }
 
     public class LevelIsLoaded : ArkEvent
     {
@@ -28,11 +31,10 @@ namespace Arkanoid
         private Dictionary<BrickType, int> _brickCount;
         private RandomLevelGenerator _levelGenerator;
 
-        void Start()
+        public void Init()
         {
-            _brickRoot = GameObject.Find("BrickRoot").transform;
             _levelGenerator = new RandomLevelGenerator();
-
+            _brickRoot = GameObject.Find("BrickRoot").transform;
             _brickCount = new Dictionary<BrickType, int>();
             foreach (BrickType type in Enum.GetValues(typeof(BrickType)))
             {
@@ -42,8 +44,10 @@ namespace Arkanoid
             MessageBus.OnEvent<GameIsInitiliazed>().Subscribe(evnt =>
             {
                 ClearLevel();
-                _levelMap = _levelGenerator.GenerateRandomLevel(evnt.BrickDensity, evnt.UnbreakableDensity);
-                //_levelMap = _levelGenerator.GenerateRandomLevel(50, 50);
+
+                if(!evnt.SameLevel)
+                    _levelMap = _levelGenerator.GenerateRandomLevel(evnt.BrickDensity, evnt.UnbreakableDensity);
+
                 InitiliazeLevel();
                 MessageBus.Publish(new LevelIsLoaded()
                 {
@@ -55,11 +59,6 @@ namespace Arkanoid
             {
                 OnBrickDestroyed(evnt.BType);
             });
-        }
-
-        void Update()
-        {
-
         }
 
         public void InitiliazeLevel()
@@ -84,17 +83,18 @@ namespace Arkanoid
 
         public void ClearLevel()
         {
-            foreach(Brick brck in _brickRoot.GetComponentsInChildren<Brick>())
+            if (_brickRoot.childCount > 0)
             {
-                brck.Clear();
+                foreach (Brick brck in _brickRoot.GetComponentsInChildren<Brick>())
+                {
+                    brck.Clear();
+                }
             }
 
             foreach (BrickType type in Enum.GetValues(typeof(BrickType)))
             {
                 _brickCount[type] = 0;
             }
-
-            _levelMap = null;
         }
 
         private void OnBrickDestroyed(BrickType type)
@@ -103,7 +103,10 @@ namespace Arkanoid
             if (_brickCount[type] <= 0)
             {
                 Debug.Log("Level is Completed");
-                MessageBus.Publish(new LevelIsCompleted());
+                MessageBus.Publish(new LevelIsCompleted()
+                {
+                    Succeed = true
+                });
             }
         }
     }

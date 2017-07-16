@@ -11,6 +11,7 @@ namespace Arkanoid
     {
         public int BrickDensity;
         public int UnbreakableDensity;
+        public bool SameLevel;
     }
 
     public class GameIsStarted : ArkEvent { }
@@ -45,8 +46,14 @@ namespace Arkanoid
 
         public bool GameIsStarted = false;
         public GameMode GameMode;
+
         private List<Vector2> _questModeLevels;
+        private int _endlessDensity;
+        private int _endlessUnbreakable;
+
         private int _currentLevel;
+        [SerializeField] private LevelLoader _levelLoader;
+        private MainMenu _mainMenuHandler;
 
         void Awake()
         {
@@ -55,6 +62,12 @@ namespace Arkanoid
 
         void Start()
         {
+            if (GameObject.Find("MainMenuHandler") != null)
+            {
+                _mainMenuHandler = GameObject.Find("MainMenuHandler").GetComponent<MainMenu>();
+                GameMode = _mainMenuHandler.GameMode;
+            }
+            
             if (GameMode == GameMode.QuestMode)
             {
                 _questModeLevels = new List<Vector2>();
@@ -66,11 +79,6 @@ namespace Arkanoid
                 _currentLevel = 0;
 
                 BrickPools.InitiliazeBrickPools();
-                MessageBus.Publish(new GameIsInitiliazed()
-                {
-                   BrickDensity = (int)_questModeLevels[_currentLevel].x,
-                   UnbreakableDensity = (int)_questModeLevels[_currentLevel].y,
-                });
 
                 MessageBus.OnEvent<LevelIsCompleted>().Subscribe(evnt =>
                 {
@@ -78,13 +86,18 @@ namespace Arkanoid
                     d = Observable.Timer(TimeSpan.FromSeconds(1f)).Subscribe(x =>
                     {
                         GameIsStarted = false;
-                        _currentLevel++;
+                        if (evnt.Succeed)
+                        {
+                            _currentLevel++;
+                        }
+
                         if (_currentLevel < _questModeLevels.Count)
                         {
                             MessageBus.Publish(new GameIsInitiliazed()
                             {
                                 BrickDensity = (int) _questModeLevels[_currentLevel].x,
                                 UnbreakableDensity = (int) _questModeLevels[_currentLevel].y,
+                                SameLevel = !evnt.Succeed
                             });
                         }
                         else
@@ -93,6 +106,76 @@ namespace Arkanoid
                         }
                         d.Dispose();
                     });
+                });
+
+                UIManager.Instance.Init();
+                _levelLoader.Init();
+
+                MessageBus.OnEvent<GameIsOver>().Subscribe(evnt =>
+                {
+                    if (_mainMenuHandler != null)
+                        Destroy(_mainMenuHandler.gameObject);
+                    MessageBus.ClearAllEvents();
+                    SceneManager.LoadScene("MainMenu");
+                });
+
+                MessageBus.Publish(new GameIsInitiliazed()
+                {
+                    BrickDensity = (int)_questModeLevels[_currentLevel].x,
+                    UnbreakableDensity = (int)_questModeLevels[_currentLevel].y,
+                    SameLevel = false
+                });
+            }
+
+            else if (GameMode == GameMode.EndlessMode)
+            {
+                _currentLevel = 0;
+                _endlessDensity = 20;
+                _endlessUnbreakable = 0;
+
+                BrickPools.InitiliazeBrickPools();
+
+                MessageBus.OnEvent<LevelIsCompleted>().Subscribe(evnt =>
+                {
+                    IDisposable d = null;
+                    d = Observable.Timer(TimeSpan.FromSeconds(1f)).Subscribe(x =>
+                    {
+                        GameIsStarted = false;
+                        if (evnt.Succeed)
+                        {
+                            _currentLevel++;
+                            if(_endlessDensity < 100)
+                                _endlessDensity++;
+                            if(_endlessUnbreakable < 50)
+                                _endlessUnbreakable++;
+                        }
+
+                        MessageBus.Publish(new GameIsInitiliazed()
+                        {
+                            BrickDensity = _endlessDensity,
+                            UnbreakableDensity = _endlessUnbreakable,
+                            SameLevel = !evnt.Succeed
+                        });
+                        d.Dispose();
+                    });
+                });
+
+                UIManager.Instance.Init();
+                _levelLoader.Init();
+
+                MessageBus.OnEvent<GameIsOver>().Subscribe(evnt =>
+                {
+                    if (_mainMenuHandler != null)
+                        Destroy(_mainMenuHandler.gameObject);
+                    MessageBus.ClearAllEvents();
+                    SceneManager.LoadScene("MainMenu");
+                });
+
+                MessageBus.Publish(new GameIsInitiliazed()
+                {
+                    BrickDensity = _endlessDensity,
+                    UnbreakableDensity = _endlessUnbreakable,
+                    SameLevel = false
                 });
             }
         }
