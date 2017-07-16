@@ -91,6 +91,14 @@ namespace Arkanoid
             {
                 ResetSpeed();
             }
+            else if (col.gameObject.tag == "DeadZone")
+            {
+                _rigidbody.velocity = new Vector2(0, 0);
+                _followPaddle = true;
+                _trailRenderer.enabled = false;
+                _speedBuffTimer = 0f;
+                GameManager.Instance.BallIsDead();
+            }
         }
 
         private void ResetSpeed()

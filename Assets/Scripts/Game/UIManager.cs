@@ -28,6 +28,7 @@ namespace Arkanoid
 
         public Text LevelName;
         public Text LevelDifficulty;
+        public Text Life;
         public PauseMenu PauseMenu;
         public bool PauseMenuActive;
 
@@ -42,6 +43,12 @@ namespace Arkanoid
             {
                 LevelName.text = "Level: " + (GameManager.Instance.GetLevelIndex()+1).ToString();
                 LevelDifficulty.text = "Difficulty: " + (evnt.Complexity / 100).ToString();
+            });
+            MessageBus.OnEvent<BallIsDamaged>().Subscribe(evnt =>
+            {
+                Life.text = "";
+                for(int i=0; i<GameManager.Instance.GetLife(); i++)
+                    Life.text += "♥";
             });
 
             PauseMenuActive = false;

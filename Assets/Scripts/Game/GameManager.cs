@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UniRx;
+using UniRx.Examples;
 
 namespace Arkanoid
 {
@@ -17,6 +18,8 @@ namespace Arkanoid
     public class GameIsStarted : ArkEvent { }
 
     public class GameIsOver : ArkEvent { }
+
+    public class BallIsDamaged : ArkEvent { }
 
     public enum GameMode
     {
@@ -51,6 +54,8 @@ namespace Arkanoid
         private int _endlessDensity;
         private int _endlessUnbreakable;
 
+        private int _life;
+
         private int _currentLevel;
         [SerializeField] private LevelLoader _levelLoader;
         private MainMenu _mainMenuHandler;
@@ -62,6 +67,7 @@ namespace Arkanoid
 
         void Start()
         {
+            _life = 5;
             if (GameObject.Find("MainMenuHandler") != null)
             {
                 _mainMenuHandler = GameObject.Find("MainMenuHandler").GetComponent<MainMenu>();
@@ -203,6 +209,24 @@ namespace Arkanoid
         public int GetLevelIndex()
         {
             return _currentLevel;
+        }
+
+        public int GetLife()
+        {
+            return _life;
+        }
+
+        public void BallIsDead()
+        {
+            _life--;
+            MessageBus.Publish(new BallIsDamaged());
+
+            if (_life <= 0)
+            {
+                MessageBus.Publish(new GameIsOver());
+            }
+
+            GameIsStarted = false;
         }
     }
 }

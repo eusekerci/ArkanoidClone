@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UniRx;
 using UnityEngine;
@@ -8,6 +9,9 @@ namespace Arkanoid
 {
     public class PauseMenu : MonoBehaviour
     {
+        public Toggle CheatToggle;
+        [SerializeField] private Transform _deadZone;
+
         public void ResumeButtonClick()
         {
             UIManager.Instance.TogglePauseMenu();
@@ -33,7 +37,7 @@ namespace Arkanoid
 
         public void CheatToggleClick()
         {
-            
+            _deadZone.gameObject.SetActive(!CheatToggle.isOn);
         }
     }
 }
