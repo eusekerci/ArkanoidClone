@@ -17,7 +17,7 @@ namespace Arkanoid
             _poolParent = new GameObject(prefab.name + "Pool").transform;
             PoolType = brickType;
 
-            Object.DontDestroyOnLoad(_poolParent.gameObject);
+            //Object.DontDestroyOnLoad(_poolParent.gameObject);
 
             for (int i = 0; i < poolSize; i++)
             {

@@ -5,6 +5,18 @@ using UnityEngine;
 
 namespace Arkanoid
 {
+    public class BrickIsDestroyed : ArkEvent
+    {
+        public BrickType BType { get; set; }
+        public Vector2 Pos { get; set; }
+    }
+
+    public class BrickIsHit : ArkEvent
+    {
+        public BrickType BType { get; set; }
+        public Vector2 Pos { get; set; }
+    }
+
     [Flags]
     public enum BrickType
     {
@@ -17,6 +29,7 @@ namespace Arkanoid
     {
         protected int _life;
         protected BrickType _type;
+        public Vector2 Position;
 
         protected virtual void Start()
         {
@@ -30,6 +43,12 @@ namespace Arkanoid
 
         private void GetHit()
         {
+            MessageBus.Publish(new BrickIsHit()
+            {
+                Pos = Position,
+                BType = _type
+            });
+
             _life--;
             if (_life == 0)
             {
@@ -39,6 +58,11 @@ namespace Arkanoid
 
         private void DestroySelf()
         {
+            MessageBus.Publish(new BrickIsDestroyed()
+            {
+                Pos = Position,
+                BType = _type
+            });
             BrickPools.Pools[_type].Kill(gameObject);
         }
 

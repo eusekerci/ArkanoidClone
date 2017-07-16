@@ -77,22 +77,14 @@ namespace Arkanoid
 
             CalculateLevelComplexity();
 
+            //If level not achievable, generate try one more time
+            //TODO prevent generating unachievable levels next time
+            if (_totalComplexity < 0)
+            {
+                return GenerateRandomLevel(brickDensity, unbreakableDensity);
+            }
+
             return _level;
-        }
-
-        public string[] GenerateLevelByComplexity(int complexity)
-        {
-            return null;
-        }
-
-        public string[] GenerateLevelByComplexity(int complexity, int brickDensity, int unbreakableDensity)
-        {
-            return null;
-        }
-
-        private bool IsLevelAchieveable()
-        {
-            return true;
         }
 
         public int CalculateLevelComplexity()
@@ -153,19 +145,25 @@ namespace Arkanoid
                 }
             }
 
-            
+            _totalComplexity = 0;
             for (int i = 0; i < _rowCount; i++)
             {
                 string asd = "";
                 for (int j = 0; j < _columnCount; j++)
                 {
-                    asd += _complexityGraph[i * _columnCount + j].ToString() + " ";
+                    asd += _complexityGraph[i * _columnCount + j] + " ";
+                    if (_complexityGraph[i * _columnCount + j] == -1)
+                    {
+                        return -1;
+                    }
+                    _totalComplexity += _complexityGraph[i * _columnCount + j];
                 }
                 Debug.Log(asd);
             }
-            
 
-            return 0;
+            Debug.Log(_totalComplexity);
+
+            return _totalComplexity;
         }
     }
 }

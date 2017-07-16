@@ -6,6 +6,32 @@ namespace Arkanoid
 {
     public class Paddle : MonoBehaviour
     {
+        #region Singleton
+
+        private static Paddle instance;
+
+        public static Paddle Instance
+        {
+            get
+            {
+                if (instance == null)
+                {
+                    instance = new Paddle();
+                }
+                return instance;
+            }
+        }
+        #endregion
+
+        public Transform Transform { get { return transform; } }
+
+        public Vector3 Position { get { return transform.position; } }
+
+        void Awake()
+        {
+            instance = this;
+        }
+
         void Update()
         {
             float positionX = 0;
