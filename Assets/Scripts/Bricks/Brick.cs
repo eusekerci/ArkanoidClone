@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using UniRx;
 using UnityEngine;
 
 namespace Arkanoid
@@ -31,10 +32,18 @@ namespace Arkanoid
         protected BrickType _type;
         public Vector2 Position;
         protected int _currentLife;
+        private BoxCollider2D _collider;
+        private AudioSource _audio;
+
+        private void Awake()
+        {
+            _collider = GetComponent<BoxCollider2D>();
+            _audio = GetComponent<AudioSource>();
+        }
 
         protected virtual void Start()
         {
-            
+
         }
 
         void Update()
@@ -42,7 +51,7 @@ namespace Arkanoid
 
         }
 
-        private void GetHit()
+        protected virtual void GetHit()
         {
             MessageBus.Publish(new BrickIsHit()
             {
@@ -51,6 +60,7 @@ namespace Arkanoid
             });
 
             _currentLife--;
+            _audio.Play();
             if (_currentLife == 0)
             {
                 DestroySelf();
@@ -59,12 +69,22 @@ namespace Arkanoid
 
         private void DestroySelf()
         {
-            MessageBus.Publish(new BrickIsDestroyed()
+            _collider.enabled = false;
+
+            iTween.ShakePosition(Camera.main.gameObject, iTween.Hash("y", 0.1f, "time", 0.3f));
+            iTween.ScaleTo(gameObject, new Vector3(0,0,0), 1);
+            iTween.RotateTo(gameObject, new Vector3(0,0,180), 1);
+
+            IDisposable d = null;
+            d = Observable.Timer(TimeSpan.FromSeconds(1f)).Subscribe(x =>
             {
-                Pos = Position,
-                BType = _type
+                MessageBus.Publish(new BrickIsDestroyed()
+                {
+                    Pos = Position,
+                    BType = _type
+                });
+                BrickPools.Pools[_type].Kill(gameObject);
             });
-            BrickPools.Pools[_type].Kill(gameObject);
         }
 
         public void Clear()
@@ -79,7 +99,9 @@ namespace Arkanoid
 
         private void OnEnable()
         {
+            transform.localScale = new Vector3(1,1,1);
             _currentLife = _life;
+            _collider.enabled = true;
         }
     }
 }

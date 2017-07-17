@@ -68,6 +68,7 @@ namespace Arkanoid
         void Start()
         {
             _life = 5;
+            Utils.Random = new System.Random();
             if (GameObject.Find("MainMenuHandler") != null)
             {
                 _mainMenuHandler = GameObject.Find("MainMenuHandler").GetComponent<MainMenu>();

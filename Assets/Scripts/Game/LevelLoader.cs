@@ -73,6 +73,7 @@ namespace Arkanoid
                         int type = Int32.Parse(_levelMap[ind]);
                         GameObject go = BrickPools.Pools[(BrickType)type].Get();
                         go.transform.position = new Vector3(_firstColumnX + j * _columnOffset, _firstRowY + i * _rowOffset, 0);
+                        iTween.MoveFrom(go, iTween.Hash("x", go.transform.position.x, "y", go.transform.position.y + 10, "delay", Utils.Random.NextDouble()));
                         go.transform.SetParent(_brickRoot);
                     }
 

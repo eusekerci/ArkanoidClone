@@ -21,6 +21,7 @@ namespace Arkanoid
         private float _paddleBounceCoff = 250f;
 
         private bool _followPaddle;
+        private Color _myColor;
 
         void Start()
         {
@@ -30,6 +31,7 @@ namespace Arkanoid
 
             _followPaddle = true;
             _trailRenderer.enabled = false;
+            _myColor = _renderer.color;
 
             MessageBus.OnEvent<GameIsStarted>().Subscribe(evnt =>
             {
@@ -45,6 +47,15 @@ namespace Arkanoid
                 _followPaddle = true;
                 _trailRenderer.enabled = false;
                 _speedBuffTimer = 0f;
+            });
+
+            MessageBus.OnEvent<BrickIsHit>().Subscribe(evnt =>
+            {
+                iTween.ColorFrom(gameObject, Color.red, 0.3f);
+                iTween.ColorTo(gameObject, iTween.Hash("r", _myColor.r, "g", _myColor.g, "b", _myColor.b, "delay", 0.33f));
+
+                iTween.ScaleFrom(gameObject, new Vector3(1.5f, 1.5f, 1.5f), 0.3f);
+                iTween.ScaleTo(gameObject, iTween.Hash("x", 1f, "y", 1f, "z", 1f, "delay", 0.33f));
             });
         }
 
