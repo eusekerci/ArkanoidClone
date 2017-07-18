@@ -48,7 +48,7 @@ namespace Arkanoid
             {
                 Life.text = "";
                 for(int i=0; i<GameManager.Instance.GetLife(); i++)
-                    Life.text += "♥";
+                    Life.text += "D";
             });
 
             PauseMenuActive = false;
